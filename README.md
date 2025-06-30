@@ -19,15 +19,31 @@ App simples para gerenciar agendamentos semanais com alunos, focado em dispositi
 ## Estrutura do Projeto
 ```shell
 MeuApp/
-├── Properties/ # Configurações do projeto
-├── Platforms/ # Código específico para cada plataforma (Android, iOS, etc)
-├── Resources/ # Imagens, fontes, estilos
-├── Model/ # Entidades e regras de negócio (ex: Agendamento)
-├── View/ # Telas do app (.xaml + code-behind)
-├── Services/ # Serviços para persistência, notificações, etc
-├── App.xaml # Configurações globais do app
+├── Aid/ # Utilitários e helpers gerais
+│ ├── AidClasses/ # Classes auxiliares (ex: geração de ID)
+│ │ └── AidIdentifier.cs
+│ ├── ExtensionClasses/ # Métodos de extensão utilitários
+│ └── StringExtension.cs
+├── Model/ # Camada de domínio e entidades do sistema
+│ ├── Entities/
+│ │ ├── MainEntities/ # Entidades principais (ex: Scheduling, Trainee)
+│ │ │ ├── Scheduling.cs
+│ │ │ └── Trainee.cs
+│ │ └── ComposeEntities/ # Entidades auxiliares/composição (ex: Email, Phone)
+│ │ ├── Appointment.cs
+│ │ ├── Address.cs
+│ │ ├── Email.cs
+│ │ └── Phone.cs
+│ └── Enums/ # Enumerações auxiliares
+├── View/ # Telas da aplicação (.xaml + .cs)
+│ └── MainPage.xaml
+├── Services/ # Serviços (ex: persistência, notificações)
+├── Resources/ # Fontes, imagens e estilos do app
+├── Platforms/ # Código específico por plataforma (Android, iOS, etc)
+├── Properties/ # Configurações de build e assembly
+├── App.xaml # Definições globais de estilos e recursos
 ├── AppShell.xaml # Roteamento e navegação
-└── MauiProgram.cs # Configuração e injeção de dependências
+└── MauiProgram.cs # Injeção de dependências e configuração principal
 ```
 ---
 
