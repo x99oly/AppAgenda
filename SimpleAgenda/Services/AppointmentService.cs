@@ -1,7 +1,9 @@
-﻿using SimpleAgenda.DTOS.Publics;
+﻿using SimpleAgenda.Entities;
 using SimpleAgenda.Context;
 using SimpleAgenda.Interfaces;
 using SimpleAgenda.Repositories;
+using SimpleAgenda.DTOS.Internals;
+using SimpleAgenda.DTOS.Publics;
 
 namespace SimpleAgenda.Services
 {
@@ -19,9 +21,10 @@ namespace SimpleAgenda.Services
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
-        public async Task<T?> Get(int id)
+        public async Task<AppointmentOutDto?> Get(int id)
         {
-            return await _repository.Get(id);
+            Appointment appointment = new Appointment((AppointmentDto)await _repository.Get(id));
+            return new AppointmentOutDto(appointment);
         }
 
         public async Task<List<T>> GetList()

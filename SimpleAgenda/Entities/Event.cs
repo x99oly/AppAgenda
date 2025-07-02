@@ -1,21 +1,31 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SimpleAgenda.DTOS.Internals;
 
 namespace SimpleAgenda.Entities
 {
-    internal class Event(string title,
-        string? description = null, Location? location=null)
+    internal class Event
     {
         internal readonly int id = Aid.AidClasses.AidIdentifier.RandomIntId(4);
 
-        internal string Title { get; set; } = title;
+        internal string Title { get; set; }
 
-        internal string Description { get; set; } = description ?? string.Empty;
+        internal string Description { get; set; }
 
-        internal Location? Location { get; set; } = location;
+        internal Location? Location { get; set; }
+
+        internal Event(string title, string? description = null, Location? location = null)
+        {
+            Title = title;
+            Description = description ?? string.Empty;
+            Location = location;
+        }
+
+        internal Event(EventDto dto)
+        {
+            id = dto.Id;
+            Title = dto.Title;
+            Description = dto.Description ?? string.Empty;
+            Location = dto.Location != null ? new Location(dto.Location) : null;
+        }
 
 
     }

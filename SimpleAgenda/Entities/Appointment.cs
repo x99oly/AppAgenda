@@ -24,7 +24,7 @@ namespace SimpleAgenda.Entities
         {
             Id = dto.Id;
             Date = dto.Date;
-            Event = new Event(dto.EventDto);
+            Event = new Event(dto.Event);
         }
     }
 }

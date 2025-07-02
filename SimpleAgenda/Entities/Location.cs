@@ -3,24 +3,39 @@ using SimpleAgenda.Enums;
 
 namespace SimpleAgenda.Entities
 {
-    internal class Location(string street,
-        string city,
-        string postalCode,
-        string country,
-        string state,
-        string complement = "")
+    internal class Location
     {
-        internal string Street { get; private set; } = street.NullOrEmptyValidator();
-        internal string City { get; private set; } = city.NullOrEmptyValidator();
-        internal string PostalCode { get; private set; } = PostalCodeValidator(postalCode);
-        internal string Country { get; private set; } = country.NullOrEmptyValidator();
-        internal BrazilStatesEnum State { get; private set; } = StateValidator(state);
-        internal string Complement { get; private set; } = complement.NullOrEmptyValidator();
+        internal string Street { get; private set; }
+        internal string City { get; private set; }
+        internal string PostalCode { get; private set; }
+        internal string Country { get; private set; }
+        internal BrazilStatesEnum State { get; private set; }
+        internal string Complement { get; private set; }
 
+        internal Location(string street, string city, string postalCode, string country, string state, string complement = "")
+        {
+            Street = street.NullOrEmptyValidator();
+            City = city.NullOrEmptyValidator();
+            PostalCode = PostalCodeValidator(postalCode);
+            Country = country.NullOrEmptyValidator();
+            State = StateValidator(state);
+            Complement = complement.NullOrEmptyValidator();
+        }
+
+        public Location(SimpleAgenda.DTOS.Internals.LocationDto dto)
+        {
+            Street = dto.Street.NullOrEmptyValidator();
+            City = dto.City.NullOrEmptyValidator();
+            PostalCode = PostalCodeValidator(dto.PostalCode);
+            Country = dto.Country.NullOrEmptyValidator();
+            State = StateValidator(dto.State.ToString());
+            Complement = dto.Complement != null ? dto.Complement : string.Empty;
+        }
+        
         private static string PostalCodeValidator(string value)
         {
             if (value.Count(d => char.IsDigit(d)) < 8)
-                throw new ArgumentException("The provided value doesn't have the correct number of digits of a postal code.");
+                throw new ArgumentException("The provided value doesn't have the correct number of digits for a postal code.");
 
             return value.NullOrEmptyValidator();
         }
