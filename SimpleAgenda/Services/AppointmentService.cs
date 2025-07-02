@@ -23,13 +23,23 @@ namespace SimpleAgenda.Services
 
         public async Task<AppointmentOutDto?> Get(int id)
         {
-            Appointment appointment = new Appointment((AppointmentDto)await _repository.Get(id));
-            return new AppointmentOutDto(appointment);
+            T? result = await _repository.Get(id);
+            if (result == null)
+                return new AppointmentOutDto();
+
+            return ConvertToAppointmentoutDto(result);
         }
 
-        public async Task<List<T>> GetList()
+        public async Task<List<AppointmentOutDto>> GetList()
         {
-            return await _repository.GetList();
+            List<T> results = await _repository.GetList();
+
+            return results
+                .Select(item =>
+                {
+                    return ConvertToAppointmentoutDto(item);
+                })
+                .ToList();
         }
 
         public async Task Create(T entity)
@@ -46,5 +56,16 @@ namespace SimpleAgenda.Services
         {
             await _repository.Delete(id);
         }
+
+
+        private AppointmentOutDto ConvertToAppointmentoutDto(T result)
+        {
+            AppointmentDto? appointmentDto = result as AppointmentDto
+            ?? throw new InvalidCastException($"The entity of type {typeof(T).Name} cannot be cast to AppointmentDto.");
+
+            Appointment appointment = new Appointment(appointmentDto);
+            return appointment.ConvertToPublicDto();
+        }
+
     }
 }

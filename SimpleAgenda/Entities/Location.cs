@@ -64,7 +64,7 @@ namespace SimpleAgenda.Entities
                 Complement = Complement
             };
         }
-        
+
         public LocationDto ConvertToInternalDto()
         {
             return new LocationDto
@@ -78,4 +78,7 @@ namespace SimpleAgenda.Entities
             };
 
         }
+
+
+    }
 }
