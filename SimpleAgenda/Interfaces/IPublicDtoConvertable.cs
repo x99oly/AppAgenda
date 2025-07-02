@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace SimpleAgenda.Interfaces
 {
-    internal interface IDtoConvertable<T>
+    public interface IPublicDtoConvertable<T> where T : class
     {
-        T ConvertToInternalDto();
+        T ConvertToPublicDto();
     }
 }

@@ -1,9 +1,12 @@
 ﻿using SimpleAgenda.Aid.ExtensionClasses;
+using SimpleAgenda.DTOS.Internals;
+using SimpleAgenda.DTOS.Publics;
 using SimpleAgenda.Enums;
+using SimpleAgenda.Interfaces;
 
 namespace SimpleAgenda.Entities
 {
-    internal class Location
+    internal class Location : IDtoConvertable<LocationDto>, IPublicDtoConvertable<LocationOutDto>
     {
         internal string Street { get; private set; }
         internal string City { get; private set; }
@@ -31,7 +34,7 @@ namespace SimpleAgenda.Entities
             State = StateValidator(dto.State.ToString());
             Complement = dto.Complement != null ? dto.Complement : string.Empty;
         }
-        
+
         private static string PostalCodeValidator(string value)
         {
             if (value.Count(d => char.IsDigit(d)) < 8)
@@ -48,5 +51,31 @@ namespace SimpleAgenda.Entities
 
             return estado;
         }
-    }
+
+        public LocationOutDto ConvertToPublicDto()
+        {
+            return new LocationOutDto
+            {
+                Street = Street,
+                City = City,
+                PostalCode = PostalCode,
+                Country = Country,
+                State = State,
+                Complement = Complement
+            };
+        }
+        
+        public LocationDto ConvertToInternalDto()
+        {
+            return new LocationDto
+            {
+                Street = Street,
+                City = City,
+                PostalCode = PostalCode,
+                Country = Country,
+                State = State,
+                Complement = Complement
+            };
+
+        }
 }

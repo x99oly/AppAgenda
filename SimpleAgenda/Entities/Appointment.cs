@@ -1,8 +1,10 @@
 ﻿using SimpleAgenda.DTOS.Internals;
+using SimpleAgenda.DTOS.Publics;
+using SimpleAgenda.Interfaces;
 
 namespace SimpleAgenda.Entities
 {
-    internal class Appointment
+    internal class Appointment : IDtoConvertable<AppointmentDto>, IPublicDtoConvertable<AppointmentOutDto>
     {
         internal readonly int Id = Aid.AidClasses.AidIdentifier.RandomIntId(4);
         internal DateTime Date { get; private set; }
@@ -25,6 +27,25 @@ namespace SimpleAgenda.Entities
             Id = dto.Id;
             Date = dto.Date;
             Event = new Event(dto.Event);
+        }
+
+        public AppointmentOutDto ConvertToPublicDto()
+        {
+            return new AppointmentOutDto
+            {
+                Date = Date,
+                Event = Event.ConvertToPublicDto()
+            };
+        }
+
+        public AppointmentDto ConvertToInternalDto()
+        {
+            return new AppointmentDto
+            {
+                Id = Id,
+                Date = Date,
+                Event = Event.ConvertToInternalDto()
+            };
         }
     }
 }
