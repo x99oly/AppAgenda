@@ -6,18 +6,20 @@ namespace SimpleAgenda.Entities
 {
     internal class Appointment : IDtoConvertable<AppointmentDto>, IPublicDtoConvertable<AppointmentOutDto>
     {
-        internal readonly int Id = Aid.AidClasses.AidIdentifier.RandomIntId(4);
+        internal readonly int Id;
         internal DateTime Date { get; private set; }
         internal Event Event {  get; private set; }
 
         internal Appointment(DateTime date, SimpleAgenda.Entities.Event newEvent)
         {
+            Id = Aid.AidClasses.AidIdentifier.RandomIntId(4);
             Date = date;
             Event = newEvent; 
         }
 
         internal Appointment(DateTime date, string title, string? description = null, Location? location = null)
         {
+            Id = Aid.AidClasses.AidIdentifier.RandomIntId(4);
             Date = date;
             Event = new SimpleAgenda.Entities.Event(title, description, location);
         }
@@ -29,10 +31,30 @@ namespace SimpleAgenda.Entities
             Event = new Event(dto.Event);
         }
 
+        internal Appointment(AppointmentOutDto dto)
+        {
+            if (dto.Id is 0)
+                throw new ArgumentException("Invalid AppointmentOutDto provided.");
+            Id = dto.Id;
+
+            Date = dto.Date ?? throw new InvalidOperationException("The parameter 'Date' must be provided in constructor.");
+
+            if (dto.Event is null)
+                throw new ArgumentException("The parameter 'Event' must be provided in constructor.");
+            Event = new Event(dto.Event);
+        }
+
+        internal void Update(AppointmentOutDto dto)
+        {
+            Date = dto.Date ?? Date;
+            Event = Event.Update(dto.Event);
+        }
+
         public AppointmentOutDto ConvertToPublicDto()
         {
             return new AppointmentOutDto
             {
+                Id = Id,
                 Date = Date,
                 Event = Event.ConvertToPublicDto()
             };

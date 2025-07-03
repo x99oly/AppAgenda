@@ -35,6 +35,16 @@ namespace SimpleAgenda.Entities
             Complement = dto.Complement != null ? dto.Complement : string.Empty;
         }
 
+        public Location(SimpleAgenda.DTOS.Publics.LocationOutDto dto)
+        {
+            Street = dto.Street.NullOrEmptyValidator();
+            City = dto.City.NullOrEmptyValidator();
+            PostalCode = PostalCodeValidator(dto.PostalCode);
+            Country = dto.Country.NullOrEmptyValidator();
+            State = StateValidator(dto.State.ToString());
+            Complement = dto.Complement != null ? dto.Complement : string.Empty;
+        }
+
         private static string PostalCodeValidator(string value)
         {
             if (value.Count(d => char.IsDigit(d)) < 8)
@@ -79,6 +89,17 @@ namespace SimpleAgenda.Entities
 
         }
 
-
+        internal LocationDto Update(LocationOutDto location)
+        {
+            return new LocationDto
+            {
+                Street = location.Street ?? Street,
+                City = location.City ?? City,
+                PostalCode = location.PostalCode ?? PostalCode,
+                Country = location.Country ?? Country,
+                State = location.State ?? State,
+                Complement = location.Complement ?? Complement
+            };
+        }
     }
 }

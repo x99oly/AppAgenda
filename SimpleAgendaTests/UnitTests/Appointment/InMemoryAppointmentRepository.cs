@@ -13,7 +13,6 @@ namespace SimpleAgendaTests.UnitTests.Appointment
 
         public Task<T?> Get(int id)
         {
-            // Aqui, você precisa garantir que T tenha um campo Id para fazer a busca
             var entity = _data.FirstOrDefault(e => GetEntityId(e) == id);
             return Task.FromResult(entity);
         }

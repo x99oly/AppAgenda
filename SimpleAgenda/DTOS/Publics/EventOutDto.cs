@@ -1,11 +1,13 @@
 ﻿
+
 namespace SimpleAgenda.DTOS.Publics
 {
     public class EventOutDto
     {
-        public string Title { get; set; } = string.Empty;
-        public string? Description { get; set; }
-        public LocationOutDto? Location { get; set; }
+        public int? Id { get; set; } = null;
+        public string? Title { get; set; } = null;
+        public string? Description { get; set; } = null;
+        public LocationOutDto? Location { get; set; } = null;
 
     }
 }

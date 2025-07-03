@@ -4,7 +4,8 @@ namespace SimpleAgenda.DTOS.Publics
 {
     public class AppointmentOutDto
     {
-        public DateTime Date { get; set; }
+        public int Id { get; set; } = 0;
+        public DateTime? Date { get; set; } = null;
         public EventOutDto Event { get; set; } = null!;
     }
 }
