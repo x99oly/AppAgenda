@@ -36,6 +36,19 @@ namespace SimpleAgendaTests.UnitTests.Appointment
         }
 
         [Fact]
+        public async Task Create_NullEvent_ThrowsNullReferenceException()
+        {
+            await Assert.ThrowsAsync<NullReferenceException>(() => _service.Create(
+                new AppointmentOutDto
+                {
+                    Id = 1234,
+                    Date = DateTime.Today.AddDays(2),
+                    Event = null!
+                }
+                ));
+        }
+
+        [Fact]
         public async Task Create_NullDate_ThrowsArgumentNullException()
         {
             await Assert.ThrowsAsync<ArgumentNullException>(() => _service.Create(
