@@ -47,7 +47,7 @@ namespace SimpleAgenda.Entities
         internal void Update(AppointmentOutDto dto)
         {
             Date = dto.Date ?? Date;
-            Event = Event.Update(dto.Event);
+            Event = dto.Event is null ? this.Event : Event.Update(dto.Event);
         }
 
         public AppointmentOutDto ConvertToPublicDto()

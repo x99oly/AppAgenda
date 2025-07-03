@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using SimpleAgenda.Enums;
 using SimpleAgenda.DTOS.Publics;
 using SimpleAgenda.Services;
 using Xunit;
@@ -116,6 +114,157 @@ namespace SimpleAgendaTests.UnitTests.Appointment
             Assert.Contains(list, dto => dto.Event.Title == t0);
             Assert.Contains(list, dto => dto.Event.Title == t1);
         }
+
+        [Fact]
+        public async Task Update_Update_Appointment_Date()
+        {
+            DateTime updateDate = DateTime.Today.AddDays(5);
+
+            var newAppointment = new AppointmentOutDto
+            {
+                Date = DateTime.Today.AddDays(2),
+                Event = new EventOutDto { Title = "Evento Público 3" }
+            };
+            int createdId = await _service.Create(newAppointment);
+
+            var updatedAppointment = new AppointmentOutDto
+            {
+                Date = updateDate            
+            };
+
+            await _service.Update(createdId, updatedAppointment);
+
+            var appointment = await _service.Get(createdId);
+
+            Assert.NotNull(appointment);
+            Assert.Equal(updateDate, appointment.Date);
+
+        }
+
+        [Fact]
+        public async Task Update_Update_Event_Title()
+        {
+            var newAppointment = new AppointmentOutDto
+            {
+                Date = DateTime.Today,
+                Event = new EventOutDto { Title = "Título Original" }
+            };
+            int createdId = await _service.Create(newAppointment);
+
+            var updatedAppointment = new AppointmentOutDto
+            {
+                Event = new EventOutDto
+                {
+                    Title = "Título Atualizado"
+                }
+            };
+
+            await _service.Update(createdId, updatedAppointment);
+
+            var appointment = await _service.Get(createdId);
+
+            Assert.NotNull(appointment);
+            Assert.Equal("Título Atualizado", appointment.Event.Title);
+        }
+
+        [Fact]
+        public async Task Update_Update_Location_Only()
+        {
+            var newAppointment = new AppointmentOutDto
+            {
+                Date = DateTime.Today,
+                Event = new EventOutDto
+                {
+                    Title = "Com Endereço Original",
+                    Location = new LocationOutDto
+                    {
+                        Street = "Rua Atualizada",
+                        Number = "200",
+                        City = "Cidade Atualizada",
+                        PostalCode = "11111-111",
+                        Country = "Brasil",
+                        State = BrazilStatesEnum.SP
+                    }
+
+                }
+            };
+            int createdId = await _service.Create(newAppointment);
+
+            var updatedAppointment = new AppointmentOutDto
+            {
+                Event = new EventOutDto
+                {
+                    Location = new LocationOutDto
+                    {
+                        Street = "Rua Atualizada",
+                        City = "Cidade Atualizada"
+                    }
+                }
+            };
+
+            await _service.Update(createdId, updatedAppointment);
+
+            var appointment = await _service.Get(createdId);
+
+            Assert.NotNull(appointment);
+            Assert.Equal("Rua Atualizada", appointment.Event.Location.Street);
+            Assert.Equal("Cidade Atualizada", appointment.Event.Location.City);
+        }
+
+        [Fact]
+        public async Task Update_All_Fields()
+        {
+            var originalDate = DateTime.Today;
+            var updatedDate = DateTime.Today.AddDays(10);
+
+            var newAppointment = new AppointmentOutDto
+            {
+                Date = originalDate,
+                Event = new EventOutDto
+                {
+                    Title = "Original",
+                    Description = "Descrição Original",
+                    Location = new LocationOutDto
+                    {
+                        Street = "Rua A",
+                        Number = "100",
+                        City = "Cidade A",
+                        PostalCode = "00000-000",
+                        Country = "Brasil",
+                        State = BrazilStatesEnum.SP
+                    }
+
+                }
+            };
+            int createdId = await _service.Create(newAppointment);
+
+            var updatedAppointment = new AppointmentOutDto
+            {
+                Date = updatedDate,
+                Event = new EventOutDto
+                {
+                    Title = "Novo Título",
+                    Description = "Nova Descrição",
+                    Location = new LocationOutDto
+                    {
+                        Street = "Rua Nova",
+                        City = "Cidade Nova"
+                    }
+                }
+            };
+
+            await _service.Update(createdId, updatedAppointment);
+
+            var appointment = await _service.Get(createdId);
+
+            Assert.NotNull(appointment);
+            Assert.Equal(updatedDate, appointment.Date);
+            Assert.Equal("Novo Título", appointment.Event.Title);
+            Assert.Equal("Nova Descrição", appointment.Event.Description);
+            Assert.Equal("Rua Nova", appointment.Event.Location.Street);
+            Assert.Equal("Cidade Nova", appointment.Event.Location.City);
+        }
+
 
     }
 }

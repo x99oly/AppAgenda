@@ -71,7 +71,7 @@ namespace SimpleAgenda.Services
             if (recoverEntity == null)
                 throw new KeyNotFoundException($"Entity with ID {id} not found.");
 
-            Appointment? ap = ConvertToAppointment(recoverEntity);
+            Appointment? ap = new Appointment(recoverEntity as AppointmentOutDto);
 
             if (ap == null)
                 throw new InvalidCastException("The entity cannot be converted to an Appointment.");
@@ -79,12 +79,10 @@ namespace SimpleAgenda.Services
             // Update the appointment with the new data
             ap.Update(entity);
 
-            object internalDto = ap.ConvertToInternalDto();
-
-            if (internalDto is not T dto)
-                throw new InvalidCastException($"Esperava tipo {typeof(T).Name}, mas recebi {internalDto.GetType().Name}");
-
-            await _repository.Update(dto);
+            T? internalDto = ap.ConvertToPublicDto() as T 
+                ?? throw new InvalidCastException("The converted AppointmentOutDto is null or not of the expected type.");
+            
+            await _repository.Update(internalDto as T);
         }
 
         public async Task Delete(int id)
@@ -94,26 +92,15 @@ namespace SimpleAgenda.Services
 
         private AppointmentOutDto? ConvertToAppointmentOutDto(T result)
         {
-            Appointment? ap = ConvertToAppointment(result);
+            Appointment? ap = new Appointment(result as AppointmentOutDto);
             if (ap == null)
                 return null;
 
             return ap.ConvertToPublicDto();
         }
 
-        private Appointment? ConvertToAppointment(T result)
-        {
-            AppointmentDto? ap = ConvertToAppointmentDto(result);
-            if (ap == null)
-                return null;
-
-            return new Appointment(ap);
-        }
-
-        private AppointmentDto? ConvertToAppointmentDto(T result)
-        {
-            return result as AppointmentDto ?? null;
-        }
+        private AppointmentDto? ConvertToAppointmentDto(T result) => result as AppointmentDto ?? null;
+        
 
     }
 }
