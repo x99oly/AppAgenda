@@ -265,6 +265,32 @@ namespace SimpleAgendaTests.UnitTests.Appointment
             Assert.Equal("Cidade Nova", appointment.Event.Location.City);
         }
 
+        [Fact]
+        public async Task Delete_DeleteExistingAppointment()
+        {
+            var newAppointment = new AppointmentOutDto
+            {
+                Date = DateTime.Today.AddDays(2),
+                Event = new EventOutDto { Title = "Evento Público 3" }
+            };
+            int createdId = await _service.Create(newAppointment);
+            await _service.Delete(createdId);
+            var result = await _service.Get(createdId);
+
+            Assert.NotNull(result);
+            Assert.Null(result.Date);
+        }
+
+        [Fact]
+        public async Task Delete_DeleteNonExistingAppointment()
+        {
+            int nonExistingId = 9999; // Id que não existe
+            await _service.Delete(nonExistingId);
+            var result = await _service.Get(nonExistingId);
+
+            Assert.NotNull(result);
+            Assert.Null(result.Date); // Deve retornar um DTO vazio ou nulo
+        }
 
     }
 }
